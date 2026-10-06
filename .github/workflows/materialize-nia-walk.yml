@@ -8,17 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Assemble base64 and write PNG
+      - name: Decode base64 PNG
         run: |
           set -euo pipefail
-          cat _upload/nia.b64.part* > /tmp/nia.b64
+          cat _upload/nia.b64.part_* > /tmp/nia.b64
           base64 -d /tmp/nia.b64 > nia-walk.png
-          SIZE=$(wc -c < nia-walk.png)
+          SIZE=$(wc -c < nia-walk.png | tr -d ' ')
           SHA=$(sha256sum nia-walk.png | awk '{print $1}')
           echo "size=$SIZE sha=$SHA"
           test "$SIZE" = "325913"
           test "$SHA" = "9db4e8c2946045aeb1a6322214a0573dc79eb428a5dfc3940cd804935237596b"
-      - name: Commit PNG and cleanup upload stubs
+      - name: Commit PNG and cleanup
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -26,7 +26,6 @@ jobs:
           rm -rf _upload
           rm -f .github/workflows/materialize-nia-walk.yml
           git add -A
-          git add nia-walk.png
           git status
           git commit -m "Add arm-fixed Nia walk sprite (325913 bytes)"
           git push
