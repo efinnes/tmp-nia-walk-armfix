@@ -11,7 +11,7 @@ jobs:
       - name: Decode base64 PNG
         run: |
           set -euo pipefail
-          cat _upload/nia.b64.part_* > /tmp/nia.b64
+          cat _upload/nia.b64.part_00 _upload/nia.b64.part_01 _upload/nia.b64.part_02 _upload/nia.b64.part_03 _upload/nia.b64.part_04 > /tmp/nia.b64
           base64 -d /tmp/nia.b64 > nia-walk.png
           SIZE=$(wc -c < nia-walk.png | tr -d ' ')
           SHA=$(sha256sum nia-walk.png | awk '{print $1}')
